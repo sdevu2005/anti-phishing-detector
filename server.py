@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+    #!/usr/bin/env python3
 """
 PhishShield AI — Backend REST API & Static Server
 A zero-dependency Python server powering real-time anti-phishing heuristics,
@@ -61,22 +61,92 @@ def calculate_shannon_entropy(s: str) -> float:
     return round(entropy, 3)
 
 def analyze_url_heuristics(raw_url: str) -> dict:
-    """Server-side deep forensic evaluation of suspicious URLs."""
+    """Server-side deep forensic evaluation of suspicious URLs with malformed URL validation."""
     raw_url = raw_url.strip()
     if not raw_url:
         return {"error": "Target URL cannot be empty."}
 
-    has_protocol = bool(re.match(r'^https?://', raw_url, re.IGNORECASE))
+    is_invalid = False
+    invalid_reasons = []
+
+    # Check for scheme anomalies
+    scheme_match = re.match(r'^([a-zA-Z0-9+.-]+)://', raw_url)
+    if scheme_match:
+        scheme = scheme_match.group(1).lower()
+        if scheme not in ('http', 'https'):
+            is_invalid = True
+            if scheme in ('htp', 'htps', 'httpz', 'htttp', 'htt'):
+                invalid_reasons.append(f"Typo or malformed protocol scheme '{scheme}://' (PhishShield requires standard 'http://' or 'https://').")
+            else:
+                invalid_reasons.append(f"Unsupported/unsafe URI protocol scheme '{scheme}://'.")
+    elif re.match(r'^[a-zA-Z0-9]+:/[^/]', raw_url):
+        is_invalid = True
+        invalid_reasons.append("Malformed protocol delimiter (missing dual forward slashes '//').")
+
+    has_protocol = bool(re.match(r'^[a-zA-Z0-9+.-]+://', raw_url))
     parse_url = raw_url if has_protocol else 'http://' + raw_url
 
+    parsed = None
     try:
         parsed = urllib.parse.urlparse(parse_url)
     except Exception as e:
-        return {"error": f"Invalid URL structure: {str(e)}"}
+        is_invalid = True
+        invalid_reasons.append(f"RFC 3986 parse failure: {str(e)}")
 
-    hostname = (parsed.hostname or '').lower()
-    full_path = (parsed.path + ('?' + parsed.query if parsed.query else '')).lower()
-    
+    hostname = (parsed.hostname or '').lower() if parsed else ''
+    full_path = (((parsed.path or '') + ('?' + parsed.query if parsed and parsed.query else ''))).lower() if parsed else ''
+
+    if not hostname:
+        is_invalid = True
+        invalid_reasons.append("Missing host authority or invalid domain name syntax.")
+    else:
+        if '..' in hostname:
+            is_invalid = True
+            invalid_reasons.append("Consecutive dots ('..') detected in domain structure.")
+        if any(c in hostname for c in [' ', '<', '>', '"', '%', '$', '^', '{', '}', '|', '\\']):
+            is_invalid = True
+            invalid_reasons.append("Illegal characters or unescaped control symbols in hostname.")
+
+        is_ip = bool(re.match(r'^(\d{1,3}\.){3}\d{1,3}$', hostname))
+        if not is_ip and hostname != 'localhost':
+            if '.' not in hostname:
+                is_invalid = True
+                invalid_reasons.append("Hostname lacks a Top-Level Domain (TLD) extension (e.g. .com, .org, .net).")
+            else:
+                tld_candidate = hostname.split('.')[-1]
+                if not re.match(r'^[a-z]{2,24}$', tld_candidate):
+                    is_invalid = True
+                    invalid_reasons.append(f"Invalid or corrupted Top-Level Domain syntax ('.{tld_candidate}').")
+
+    if is_invalid:
+        factors = []
+        for reason in invalid_reasons:
+            factors.append({
+                "severity": "invalid",
+                "title": "Malformed URI / Hostname Syntax",
+                "desc": reason
+            })
+        factors.append({
+            "severity": "critical",
+            "title": "Parser Evasion / Exploit Probe Hazard",
+            "desc": "Adversaries often weaponize syntactically broken URLs to induce parser differentials between security filters and target browser parsers."
+        })
+        return {
+            "isInvalid": True,
+            "url": raw_url,
+            "hostname": hostname or "INVALID_HOST",
+            "tld": "INVALID",
+            "entropy": 0.0,
+            "threatScore": 0,
+            "verdict": "INVALID / MALFORMED URL",
+            "verdictClass": "invalid",
+            "factors": factors,
+            "hasHomoglyph": False,
+            "detectedBrand": "None",
+            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "backend": "PhishShield Python Heuristic Engine v2.4"
+        }
+
     factors = []
     threat_score = 0
 

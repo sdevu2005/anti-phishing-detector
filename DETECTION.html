@@ -1009,10 +1009,6 @@
                 <i class="fa-solid fa-satellite-dish"></i>
                 <span>Live Global Threat Intel</span>
             </button>
-            <button class="tab-btn" data-tab="tab-quiz">
-                <i class="fa-solid fa-graduation-cap"></i>
-                <span>Phish Awareness Academy</span>
-            </button>
         </nav>
 
         <!-- Tab 1: URL & Domain Scanner -->
@@ -1369,58 +1365,12 @@
             </div>
         </section>
 
-        <!-- Tab 5: Phish Awareness Academy (Quiz) -->
-        <section class="tab-content" id="tab-quiz" style="display: none;">
-            <div class="cyber-panel" style="max-width: 900px; margin: 0 auto;">
-                <div class="panel-header">
-                    <div>
-                        <h2><i class="fa-solid fa-graduation-cap"></i> Phishing Defense Training Academy</h2>
-                        <p class="panel-subtitle">Sharpen your human firewall skills through realistic interactive scenario simulations</p>
-                    </div>
-                    <div class="engine-badge" id="quiz-score-badge">
-                        SCORE: <span id="quiz-score">0</span> / <span id="quiz-total">5</span>
-                    </div>
-                </div>
-
-                <div class="quiz-card" id="quiz-box">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
-                        <span style="font-size: 0.78rem; color: var(--primary-cyan); font-family: var(--font-mono); text-transform: uppercase;" id="quiz-step">Question 1 of 5</span>
-                        <span class="preset-chip" id="quiz-category">Homoglyph Attack</span>
-                    </div>
-
-                    <h3 id="quiz-question-title" style="font-size: 1.15rem; margin-bottom: 12px; line-height: 1.5;">
-                        You receive an urgent email from support@googIe.com (with an uppercase 'i' substituting 'l'). Which security hazard is this?
-                    </h3>
-
-                    <div style="background: rgba(0, 0, 0, 0.35); padding: 14px 18px; border-radius: 10px; font-family: var(--font-mono); font-size: 0.85rem; color: #ff94ab; border-left: 3px solid var(--neon-red); margin-bottom: 18px;" id="quiz-code-snippet">
-                        From: security-team@googIe.com<br>
-                        Link: https://googIe.com/password-reset
-                    </div>
-
-                    <div class="quiz-options" id="quiz-options-container">
-                        <!-- Options generated in JS -->
-                    </div>
-
-                    <div id="quiz-explanation-box" style="margin-top: 18px; display: none; padding: 14px; background: rgba(0, 245, 155, 0.08); border: 1px solid var(--neon-green); border-radius: 12px; font-size: 0.85rem; color: #fff;">
-                        <!-- Explanation -->
-                    </div>
-
-                    <div style="margin-top: 20px; display: flex; justify-content: flex-end;">
-                        <button class="preset-chip" id="btn-next-question" style="display: none; padding: 10px 20px; font-size: 0.9rem;" onclick="loadNextQuestion()">
-                            Next Question <i class="fa-solid fa-arrow-right"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
         <!-- Footer -->
         <footer>
             <div class="footer-links">
                 <a href="#tab-url" onclick="switchTab('tab-url')">URL Engine</a>
                 <a href="#tab-email" onclick="switchTab('tab-email')">NLP Analyzer</a>
                 <a href="#tab-feed" onclick="switchTab('tab-feed')">Threat Intel</a>
-                <a href="#tab-quiz" onclick="switchTab('tab-quiz')">Security Academy</a>
             </div>
             <p>🛡️ PhishShield AI Defense Suite &bull; Multi-Layer Forensic Heuristics &bull; Client-Side Sandbox &bull; Built for Cyber Resilience</p>
         </footer>
@@ -2510,163 +2460,6 @@
         function clearThreatFeed() {
             document.getElementById('threat-feed-list').innerHTML = '';
         }
-    </script>
-
-    <!-- INTERACTIVE PHISHING ACADEMY (QUIZ) SCRIPT -->
-    <script>
-        const QUIZ_QUESTIONS = [
-            {
-                category: 'Homoglyph Attack',
-                question: 'You receive an email from support@googIe.com (where the lowercase "l" is actually an uppercase "I"). What type of deception is this?',
-                snippet: 'From: security-team@googIe.com\nLink: https://googIe.com/password-reset',
-                options: [
-                    'Homograph / IDN Typo-Squatting attack',
-                    'Standard SQL Injection vulnerability',
-                    'Zero-Day Distributed Denial of Service (DDoS)',
-                    'Legitimate secondary Google support address'
-                ],
-                answer: 0,
-                explanation: 'Correct! This is a homograph attack where visually identical or lookalike unicode characters are substituted to fool humans while routing to an attacker-controlled server.'
-            },
-            {
-                category: 'Authority Splitting',
-                question: 'Examine this URL link: "http://paypal.com@evilsite.com/login". Where will your browser actually navigate when clicked?',
-                snippet: 'Target: http://paypal.com@evilsite.com/login',
-                options: [
-                    'It safely opens paypal.com inside a secure sandbox',
-                    'It navigates directly to evilsite.com (paypal.com is treated as a username)',
-                    'The browser throws an automatic syntax error and refuses to load',
-                    'It divides the screen into two frames'
-                ],
-                answer: 1,
-                explanation: 'Correct! Everything before the "@" symbol in a URL is processed as HTTP Basic Authentication userinfo credentials. The actual hostname is "evilsite.com".'
-            },
-            {
-                category: 'Quishing / QR Attacks',
-                question: 'You see a physical parking meter sticker with a QR code saying "Quick Pay Here". What makes this uniquely hazardous?',
-                snippet: 'Payload: https://parking-payments-quick.top/checkout?meter=501',
-                options: [
-                    'QR codes cannot carry malicious payloads',
-                    'Attackers can paste counterfeit stickers over legitimate municipal QR codes to steal card details',
-                    'QR codes only work with legitimate bank applications',
-                    'Smartphones automatically verify TLD certificates before rendering'
-                ],
-                answer: 1,
-                explanation: 'Correct! Physical QR tampering (Quishing) bypasses email filters because users scan physical stickers with personal smartphones outside corporate perimeter controls.'
-            },
-            {
-                category: 'Social Engineering',
-                question: 'An email claiming to be your CEO asks you to purchase $1,000 in Apple gift cards for a client and send the PINs ASAP. What should you do?',
-                snippet: 'Subject: URGENT: Need gift cards for VIP client within 30 mins',
-                options: [
-                    'Buy them immediately so you do not upset the CEO',
-                    'Reply to the email asking for confirmation',
-                    'Verify through a separate out-of-band communication channel (e.g. call or in-person)',
-                    'Forward the email to the client'
-                ],
-                answer: 2,
-                explanation: 'Correct! Always use out-of-band verification (a trusted phone number or in-person discussion) when an email requests urgent financial or gift card actions.'
-            },
-            {
-                category: 'TLD Reputation',
-                question: 'Which of the following domains is most suspicious for an official banking login?',
-                snippet: 'Domain: https://chase-bank-account-protection.xyz/login',
-                options: [
-                    'https://chase.com/login',
-                    'https://chase-bank-account-protection.xyz/login',
-                    'https://secure.chase.com/auth',
-                    'https://www.chase.com'
-                ],
-                answer: 1,
-                explanation: 'Correct! The apex domain is "chase-bank-account-protection.xyz", an untrusted generic TLD with stacked brand keywords rather than the official "chase.com".'
-            }
-        ];
-
-        let currentQIndex = 0;
-        let score = 0;
-
-        function loadQuestion(index) {
-            const q = QUIZ_QUESTIONS[index];
-            document.getElementById('quiz-step').textContent = `Question ${index + 1} of ${QUIZ_QUESTIONS.length}`;
-            document.getElementById('quiz-category').textContent = q.category;
-            document.getElementById('quiz-question-title').textContent = q.question;
-            document.getElementById('quiz-code-snippet').innerHTML = q.snippet.replace(/\n/g, '<br>');
-            document.getElementById('quiz-explanation-box').style.display = 'none';
-            document.getElementById('btn-next-question').style.display = 'none';
-
-            const optContainer = document.getElementById('quiz-options-container');
-            optContainer.innerHTML = '';
-
-            q.options.forEach((optText, optIdx) => {
-                const btn = document.createElement('button');
-                btn.className = 'quiz-opt-btn';
-                btn.innerHTML = `<span><strong>${String.fromCharCode(65 + optIdx)}.</strong> ${optText}</span> <i class="fa-regular fa-circle"></i>`;
-                btn.onclick = () => selectQuizAnswer(optIdx, q.answer, q.explanation);
-                optContainer.appendChild(btn);
-            });
-        }
-
-        function selectQuizAnswer(selectedIdx, correctIdx, explanation) {
-            const buttons = document.querySelectorAll('.quiz-opt-btn');
-            buttons.forEach(b => b.disabled = true);
-
-            const explanationBox = document.getElementById('quiz-explanation-box');
-            explanationBox.style.display = 'block';
-
-            if (selectedIdx === correctIdx) {
-                score++;
-                buttons[selectedIdx].classList.add('correct');
-                buttons[selectedIdx].querySelector('i').className = 'fa-solid fa-circle-check';
-                explanationBox.style.borderColor = 'var(--neon-green)';
-                explanationBox.style.background = 'rgba(0, 245, 155, 0.1)';
-                explanationBox.innerHTML = `<strong>🌟 Correct!</strong> ${explanation}`;
-                cyberAudio.playSuccess();
-            } else {
-                buttons[selectedIdx].classList.add('wrong');
-                buttons[selectedIdx].querySelector('i').className = 'fa-solid fa-circle-xmark';
-                buttons[correctIdx].classList.add('correct');
-                explanationBox.style.borderColor = 'var(--neon-red)';
-                explanationBox.style.background = 'rgba(255, 51, 102, 0.1)';
-                explanationBox.innerHTML = `<strong>❌ Incorrect.</strong> ${explanation}`;
-                cyberAudio.playAlertDanger();
-            }
-
-            document.getElementById('quiz-score').textContent = score;
-            document.getElementById('btn-next-question').style.display = 'inline-flex';
-        }
-
-        function loadNextQuestion() {
-            currentQIndex++;
-            if (currentQIndex < QUIZ_QUESTIONS.length) {
-                loadQuestion(currentQIndex);
-            } else {
-                // Quiz Complete Screen
-                const box = document.getElementById('quiz-box');
-                box.innerHTML = `
-                    <div style="text-align: center; padding: 30px 10px;">
-                        <i class="fa-solid fa-trophy" style="font-size: 3.5rem; color: var(--neon-amber); margin-bottom: 16px;"></i>
-                        <h2 style="font-family: var(--font-display); font-size: 1.8rem; margin-bottom: 8px;">Training Module Complete!</h2>
-                        <p style="font-size: 1.05rem; color: var(--text-muted); margin-bottom: 24px;">
-                            You scored <strong>${score} out of ${QUIZ_QUESTIONS.length}</strong> (${Math.round((score/QUIZ_QUESTIONS.length)*100)}%) on the Phishing Defense Assessment.
-                        </p>
-                        <button class="btn-scan" style="max-width: 240px; margin: 0 auto;" onclick="restartQuiz()">
-                            <i class="fa-solid fa-rotate-left"></i> Retake Training
-                        </button>
-                    </div>
-                `;
-                cyberAudio.playSuccess();
-            }
-        }
-
-        function restartQuiz() {
-            currentQIndex = 0;
-            score = 0;
-            document.getElementById('quiz-score').textContent = '0';
-            location.reload();
-        }
-
-        // Initialize quiz
-        loadQuestion(0);
     </script>
 </body>
 </html>
